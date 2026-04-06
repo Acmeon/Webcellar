@@ -1,0 +1,36 @@
+{
+    "name": "webcellar",
+    "version": "0.0.1",
+    "description": "",
+    "type": "module",
+    "scripts": {
+        "dev": "node --watch start.ts",
+        "start": "node start.ts"
+    },
+    "bin": "start.ts",
+    "keywords": [],
+    "author": "Acmeon",
+    "license": "MIT",
+    "dependencies": {
+        "@sveltejs/acorn-typescript": "^1.0.9",
+        "acorn": "^8.15.0",
+        "commander": "^14.0.2",
+        "cookie-parser": "^1.4.7",
+        "es-module-lexer": "^2.0.0",
+        "es-module-shims": "^2.8.0",
+        "express": "^5.2.1",
+        "magic-string": "^0.30.21",
+        "office-addin-debugging": "^6.0.4",
+        "office-addin-dev-certs": "^2.0.6",
+        "rolldown": "^1.0.0-rc.3"
+    },
+    "devDependencies": {
+        "@playwright/test": "^1.59.1",
+        "@types/cookie-parser": "^1.4.10",
+        "@types/office-runtime": "^1.0.35",
+        "@types/custom-functions-runtime": "^1.6.11",
+        "@types/express": "^5.0.6",
+        "@types/node": "^25.0.10",
+        "@types/office-js": "^1.0.570"
+    }
+}

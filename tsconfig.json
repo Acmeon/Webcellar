@@ -1,0 +1,19 @@
+{
+  "compilerOptions": 
+  {
+    "target": "esnext",
+    "module": "esnext",
+    "lib": ["ESNext", "dom"],
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "allowImportingTsExtensions": true,
+    "types": ["office-js", "custom-functions-runtime", "es-module-shims", "office-runtime"],
+    "paths": 
+    {
+      "/.webcellar/webcellar.js": ["./webcellar.ts"] 
+    },
+    "allowJs": true
+  }
+}

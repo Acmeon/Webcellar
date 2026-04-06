@@ -1,0 +1,8 @@
+node_modules/
+
+.webcellar/*.js
+.webcellar/*.js.map
+.webcellar/dependencies/*
+!.webcellar/dependencies/README.md
+
+demo/~$demo.xlsx

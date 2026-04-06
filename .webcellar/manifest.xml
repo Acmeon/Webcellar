@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0" xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="TaskPaneApp">
+  <Id>6535b641-40f5-47ee-bae8-6430f4405a02</Id>
+  <Version>1.0.0.3</Version>
+  <ProviderName>Webcellar</ProviderName>
+  <DefaultLocale>en-US</DefaultLocale>
+  <DisplayName DefaultValue="Webcellar"/>
+  <Description DefaultValue="Webcellar"/>
+  <IconUrl DefaultValue="https://localhost:29640/.webcellar/icon-32x32.png?v=0.0.2"/>
+  <HighResolutionIconUrl DefaultValue="https://localhost:29640/.webcellar/icon-64x64.png?v=0.0.2"/>
+  <SupportUrl DefaultValue="https://localhost:29640/.webcellar/help.html"/>
+  <Hosts>
+    <Host Name="Workbook"/>
+  </Hosts>
+  <Requirements>
+    <Sets DefaultMinVersion="1.1">
+      <Set Name="SharedRuntime" MinVersion="1.1"/>
+    </Sets>
+  </Requirements>
+  <DefaultSettings>
+    <SourceLocation DefaultValue="https://localhost:29640/.webcellar/taskpane.html"/>
+  </DefaultSettings>
+  <Permissions>ReadWriteDocument</Permissions>
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
+    <Hosts>
+      <Host xsi:type="Workbook">
+        <Runtimes>
+          <Runtime resid="Taskpane.Url" lifetime="long"/>
+        </Runtimes>
+        <AllFormFactors>
+          <ExtensionPoint xsi:type="CustomFunctions">
+            <Script>
+              <SourceLocation resid="Functions.Script.Url"/>
+            </Script>
+            <Page>
+              <SourceLocation resid="Taskpane.Url"/>
+            </Page>
+            <Metadata>
+              <SourceLocation resid="Functions.Metadata.Url"/>
+            </Metadata>
+          </ExtensionPoint>
+        </AllFormFactors>
+        <DesktopFormFactor>
+          <GetStarted>
+            <Title resid="GetStarted.Title"/>
+            <Description resid="GetStarted.Description"/>
+            <LearnMoreUrl resid="GetStarted.LearnMoreUrl"/>
+          </GetStarted>
+          <FunctionFile resid="Taskpane.Url"/>
+          <ExtensionPoint xsi:type="PrimaryCommandSurface">
+            <OfficeTab id="TabHome">
+              <Group id="CommandsGroup">
+                <Label resid="CommandsGroup.Label"/>
+                <Icon>
+                  <bt:Image size="16" resid="Icon.16x16"/>
+                  <bt:Image size="32" resid="Icon.32x32"/>
+                  <bt:Image size="80" resid="Icon.80x80"/>
+                </Icon>
+                <Control xsi:type="Button" id="TaskpaneBtn">
+                  <Label resid="TaskpaneBtn.Label"/>
+                  <Supertip>
+                    <Title resid="TaskpaneBtn.Label"/>
+                    <Description resid="TaskpaneBtn.Tooltip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16x16"/>
+                    <bt:Image size="32" resid="Icon.32x32"/>
+                    <bt:Image size="80" resid="Icon.80x80"/>
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>ButtonId1</TaskpaneId>
+                    <SourceLocation resid="Taskpane.Url"/>
+                  </Action>
+                </Control>
+              </Group>
+            </OfficeTab>
+          </ExtensionPoint>
+        </DesktopFormFactor>
+      </Host>
+    </Hosts>
+    <Resources>
+      <bt:Images>
+        <bt:Image id="Icon.16x16" DefaultValue="https://localhost:29640/.webcellar/icon-16x16.png?v=0.0.2"/>
+        <bt:Image id="Icon.32x32" DefaultValue="https://localhost:29640/.webcellar/icon-32x32.png?v=0.0.2"/>
+        <bt:Image id="Icon.80x80" DefaultValue="https://localhost:29640/.webcellar/icon-80x80.png?v=0.0.2"/>
+      </bt:Images>
+      <bt:Urls>
+        <bt:Url id="Functions.Script.Url" DefaultValue="https://localhost:29640/.webcellar/functions.js"/>
+        <bt:Url id="Functions.Metadata.Url" DefaultValue="https://localhost:29640/.webcellar/functions.json"/>
+        <bt:Url id="GetStarted.LearnMoreUrl" DefaultValue="https://github.com/Acmeon/Webcellar/"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://localhost:29640/.webcellar/taskpane.html"/>
+      </bt:Urls>
+      <bt:ShortStrings>
+        <bt:String id="GetStarted.Title" DefaultValue="Webcellar"/>
+        <bt:String id="CommandsGroup.Label" DefaultValue="Webcellar"/>
+        <bt:String id="TaskpaneBtn.Label" DefaultValue="Show Taskpane"/>
+      </bt:ShortStrings>
+      <bt:LongStrings>
+        <bt:String id="GetStarted.Description" DefaultValue="Webcellar has been loaded."/>
+        <bt:String id="TaskpaneBtn.Tooltip" DefaultValue="Click to Show the Task Pane"/>
+      </bt:LongStrings>
+    </Resources>
+  </VersionOverrides>
+</OfficeApp>

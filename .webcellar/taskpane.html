@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Webcellar</title>
+
+    <style>
+        @media (prefers-color-scheme: dark) 
+        {
+            body, body *
+            {
+                color: white !important;
+                font-family: sans-serif;
+            }
+        }
+
+        @media (prefers-color-scheme: light) 
+        {
+            body, body *
+            {
+                color: black !important;
+                font-family: sans-serif;
+            }
+        }
+    </style>
+
+    <script src="/.webcellar/dependencies/office-js/office.js"></script>
+
+    <script type="module" src="/.webcellar/bootstrap.js"></script>
+    <script async src="/.webcellar/dependencies/es-module-shims.js"></script>
+    <script type="module-shim">
+        import * as webcellar from "./webcellar.js"
+        await webcellar.initialize()
+    </script>
+</head>
+
+<body style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
+    <picture style="width: 100%;">
+        <source srcset="logo-vertical-dark.svg" media="(prefers-color-scheme: dark)">
+        <source srcset="logo-vertical-light.svg" media="(prefers-color-scheme: light)">
+        <img src="logo-vertical-light.svg" alt="Webcellar Logo Vertical" style="width: 100%; min-width: 150px">
+    </picture>
+    <h1 style="display: none;">Webcellar</h1>
+    <a href="">Refresh</a>
+</body>
+
+</html>

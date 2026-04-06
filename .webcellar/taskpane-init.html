@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Webcellar Initialize</title>
+
+    <style>
+        @media (prefers-color-scheme: dark) 
+        {
+            body, body *
+            {
+                color: white !important;
+                font-family: sans-serif;
+            }
+        }
+
+        @media (prefers-color-scheme: light) 
+        {
+            body, body *
+            {
+                color: black !important;
+                font-family: sans-serif;
+            }
+        }
+    </style>
+
+    <script>
+        // Capture all requested URLs, so that they may be downloaded to the file system and Webcellar can be run without external network access.
+        // The URLs are captured here, because office js is not available on, e.g., npm. 
+        // Furthermore, different operating systems require different files.
+        // TODO: replace this with a service worker?  
+
+        var urls = []
+
+        var originalFetch = window.fetch;
+        window.fetch = async (...args) => 
+        {
+            urls.push(args[0])
+            return originalFetch(...args)
+        }
+
+        var originalXhrOpen = XMLHttpRequest.prototype.open
+        XMLHttpRequest.prototype.open = function(method, url, ...rest) 
+        {
+            urls.push(url)
+            return originalXhrOpen.call(this, method, url, ...rest)
+        }
+
+        var originalImgDescriptor = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, "src")
+        Object.defineProperty(HTMLImageElement.prototype, "src", 
+        {
+            set(url) 
+            {
+                urls.push(url);
+                return originalImgDescriptor.set.call(this, url);
+            },
+            get() 
+            {
+                return originalImgDescriptor.get.call(this);
+            },
+            configurable: true,
+            enumerable: true
+        })
+
+        document.querySelectorAll('script[src]').forEach(s => urls.push(s.src))
+        document.querySelectorAll('link[rel="stylesheet"]').forEach(l => consrequested_files.push(l.href))
+
+        var observer = new MutationObserver(mutations => 
+        {
+            mutations.forEach(m => 
+            {
+                m.addedNodes.forEach(node => 
+                {
+                    if(node.tagName == "SCRIPT" && node.src)
+                    {
+                        urls.push(node.src)  
+                    }
+
+                    if(node.tagName == "LINK" && node.rel == "stylesheet" && node.href)
+                    {
+                        urls.push(node.href)
+                    }
+
+                    if(node.tagName == "IMG" && node.src)
+                    {
+                        urls.push(node.src)
+                    }
+                })
+            })
+        })
+        observer.observe(document.documentElement, {childList: true, subtree: true})
+
+    </script>
+
+    <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+
+    <script>
+        Office.onReady(async () => 
+        {
+            // Disable cache.
+            Office.context.document.settings.set("Office.ForceRefreshCustomFunctionsCache", true)  
+            Office.context.document.settings.saveAsync()
+
+            // Send requested URLs to the server and handle the rest from there.
+            var resp = await fetch("https://localhost:29640", 
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(urls)
+            })
+
+            var res = await resp.text()
+
+            if(res == "OK")
+            {
+                document.body.innerHTML += `<p style="text-align: center">Webcellar initialization successful. Please close this document.</p>`
+            }
+            else
+            {
+                document.body.innerHTML += `<p style="text-align: center">Webcellar initialization failed. Please try again.</p>`
+            }
+        })
+    </script>
+</head>
+
+
+<body style="display: flex; align-items: center; justify-content: center; flex-direction: column; overflow-wrap: anywhere;">
+    <picture style="width: 100%;">
+        <source srcset="logo-vertical-dark.svg" media="(prefers-color-scheme: dark)">
+        <source srcset="logo-vertical-light.svg" media="(prefers-color-scheme: light)">
+        <img src="logo-vertical-light.svg" alt="Webcellar Logo Vertical" style="width: 100%; min-width: 150px">
+    </picture>
+    <h1 style="display: none;">Webcellar</h1>
+    <a href="">Refresh</a>
+</body>
+
+</html>
