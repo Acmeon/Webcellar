@@ -1,7 +1,7 @@
 <picture align="center">
-    <source srcset=".webcellar/github-header-dark.svg" media="(prefers-color-scheme: dark)">
-    <source srcset=".webcellar/github-header-light.svg" media="(prefers-color-scheme: light)">
-    <img src=".webcellar/github-header-light.svg" alt="Header" width="100%">
+    <source srcset="./.webcellar/github-header-dark.svg" media="(prefers-color-scheme: dark)">
+    <source srcset="./.webcellar/github-header-light.svg" media="(prefers-color-scheme: light)">
+    <img src="./.webcellar/github-header-light.svg" alt="Header" width="100%">
 </picture>
 
 **Webcellar** = **Web** technology (i.e., JavaScript) in Excel **cell**s.  
@@ -14,9 +14,9 @@ Demo (Annotated Screenshot)
 -------------------------------------------
 
 <picture align="center">
-    <source srcset=".webcellar/screenshot-annotated-dark.svg" media="(prefers-color-scheme: dark)">
-    <source srcset=".webcellar/screenshot-annotated-light.svg" media="(prefers-color-scheme: light)">
-    <img src=".webcellar/screenshot-annotated-light.svg" alt="Annotated Screenshot" width="100%">
+    <source srcset="./.webcellar/screenshot-annotated-dark.svg" media="(prefers-color-scheme: dark)">
+    <source srcset="./.webcellar/screenshot-annotated-light.svg" media="(prefers-color-scheme: light)">
+    <img src="./.webcellar/screenshot-annotated-light.svg" alt="Annotated Screenshot" width="100%">
 </picture>
 
 Exports from `*.xlsx.js` (or `*.xlsx.ts`) files become automatically available in corresponding `*.xlsx` files as functions. By default, the exports are exposed under namespace **`A`** (as in **a**pplication or **a**dd-in) in Excel.
@@ -191,7 +191,7 @@ Arguments and options:
 
 - `dirs`: Directories (one or more) from which files are served (for example, use C:/ on Windows to grant access to all files under the C drive).
 
-- `--mode <mode>`: Execution mode for Webcellar: 'init' initializes, 'run' starts the server, 'deinit' removes it; by default '', which executes 'init' (if needed) and then 'run'.
+- `--mode <mode>`: Execution mode for Webcellar: 'init' initializes, 'build' builds dependencies, 'run' starts the server, 'deinit' removes it; by default '', which executes 'init' and 'build' (if needed) and then 'run'
 
 - `--content-security-policy-sources <sources...>`:  Additional sources for the Content Security Policy (CSP) default-src directive (allowed by default: 'self', blob:, data:, 'unsafe-inline', 'unsafe-eval').
 

@@ -1,13 +1,16 @@
 {
     "name": "webcellar",
-    "version": "0.0.1",
+    "version": "0.0.5",
     "description": "",
     "type": "module",
+    "main": "webcellar.ts",
+    "homepage": "https://github.com/Acmeon/Webcellar",
+
     "scripts": {
-        "dev": "node --watch start.ts",
-        "start": "node start.ts"
+        "dev": "node --watch index.js",
+        "start": "node index.js"
     },
-    "bin": "start.ts",
+    "bin": "index.js",
     "keywords": [],
     "author": "Acmeon",
     "license": "MIT",

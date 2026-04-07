@@ -3,6 +3,7 @@
 import express from "express"
 import {fileURLToPath} from "node:url"
 import path from "node:path"
+import fss from "fs"
 import fs from "fs/promises"
 import crypto from "crypto"
 import cookieParser from "cookie-parser"
@@ -11,8 +12,62 @@ import {Command} from "commander"
 import https from "https"
 import officeAddinDevCerts from "office-addin-dev-certs"
 import officeAddinDebugging, {AppType} from "office-addin-debugging"
+import * as rolldown from "rolldown"
 
-import * as build from "./build.ts"
+// These imports enable `node --watch` to watch for changes in these modules.
+import * as startup from "./bootstrap.ts"
+import * as webcellar from "./webcellar.ts"
+
+var cwd = path.dirname(fileURLToPath(import.meta.url)).replaceAll("\\", "/")
+
+export async function build() 
+{
+    await rolldown.build(
+    [
+        {
+            // Build start.ts, bc "Stripping types is currently unsupported for files under node_modules"...
+            input: `${cwd}/start.ts`,
+            output: 
+            {
+                file: `${cwd}/index.js`,
+                minify: false,
+                sourcemap: false,
+                codeSplitting: false,
+            },
+            external: (id) => 
+            {
+                return !id.endsWith(".ts")
+            }
+        },
+        {
+            input: `${cwd}/webcellar.ts`,
+            output: 
+            {
+                file: `${cwd}/.webcellar/webcellar.js`,
+                minify: true,
+                sourcemap: true
+            },
+        },
+        {
+            input: `${cwd}/bootstrap.ts`,
+            output: 
+            {
+                file: `${cwd}/.webcellar/bootstrap.js`,
+                minify: true,
+                sourcemap: true,
+            },
+        },
+        {
+            input: fileURLToPath(await import.meta.resolve("es-module-shims")),
+            output: 
+            {
+                file: `${cwd}/.webcellar/dependencies/es-module-shims.js`,
+                minify: true,
+                sourcemap: true,
+            },
+        }
+    ])
+}
 
 async function isPathAccessAuthorized(fp: string)
 {
@@ -38,7 +93,6 @@ async function isPathAccessAuthorized(fp: string)
     return false
 }
 
-var cwd = path.dirname(fileURLToPath(import.meta.url)).replaceAll("\\", "/")
 
 console.log(
 `
@@ -51,18 +105,14 @@ ${cwd}
 
 var program = new Command()
 program.name("webcellar")
-       .argument("<dirs...>", "directories (one or more) from which files are served (for example, use C:/ on Windows to grant access to all files under the C drive)")
-       .option("--mode <mode>", "execution mode for Webcellar: 'init' initializes, 'run' starts the server, 'deinit' removes it; by default '', which executes 'init' (if needed) and then 'run'")
+       .argument("[dirs...]", "directories from which files are served (for example, use C:/ on Windows to grant access to all files under the C drive)")
+       .option("--mode <modes...>", "execution mode for Webcellar: 'init' initializes, 'build' builds dependencies, 'run' starts the server, 'deinit' removes it; by default 'init' (if needed), 'build' (if needed) and then 'run'")
        .option("--content-security-policy-sources <sources...>", "additional sources for the Content Security Policy (CSP) default-src directive (allowed by default: 'self', blob:, data:, 'unsafe-inline', 'unsafe-eval')")
        .exitOverride((e) => 
         {
             if(e.code != "commander.helpDisplayed")
             {
                 console.log("Invalid command, see the README.md file for reference (https://github.com/Acmeon/Webcellar)")
-                console.log("")
-                console.log("For example, to serve files under the C drive on Windows, run the following command:")
-                console.log(`npx webcellar C:/`)
-                console.log("")
             }
         })
         .parse(process.argv)
@@ -70,27 +120,41 @@ program.name("webcellar")
 
 var globs = [...program.args.map(p => path.resolve(`${p}/**`).replaceAll("\\", "/")), path.resolve(`${cwd}/.webcellar/**`).replaceAll("\\", "/")]
 var csps = ["blob:", "data:", "'self'", "'unsafe-inline'", "'unsafe-eval'", ...(program.opts().contentSecurityPolicySources as string[] ?? [])] 
-var mode = program.opts().mode ?? ""
-var modeOption = program.opts().mode != null
+var modes = program.opts().mode as string[] ?? []
 
-var webcellarCookieToDir = new Map<string, string>()
-
-if(mode == "")
+if(modes.length == 0)
 {
-    // Contains a README.md file by default.
-    if((await fs.readdir(`${cwd}/.webcellar/dependencies/`)).length <= 1)
+    if(!fss.existsSync(`${cwd}/.webcellar/dependencies/office-js/init.txt`))
     {
-        mode = "init" 
+        modes.push("init") 
     }
-    else
+
+    if(!fss.existsSync(`${cwd}/.webcellar/dependencies/build.txt`))
     {
-        mode = "run"
+        modes.push("build") 
     }
+
+    modes.push("run")
 }
 
 
-// Initialize mode
-if(mode == "init")
+console.log(`Modes:`)
+console.log(modes.join(", "))
+console.log("")
+
+if(modes.includes("run") && globs.length <= 1)
+{
+    console.log("Error!")
+    console.log("Current execution modes include 'run', but no directories have been specified.")
+    console.log("")
+    console.log("For example, to serve files under the C drive on Windows, run the following command:")
+    console.log(`npx webcellar C:/`)
+    process.exit()
+}
+
+
+// Initialize
+if(modes.includes("init"))
 {
     await officeAddinDebugging.startDebugging(`${cwd}/.webcellar/manifest.xml`, 
     {
@@ -100,27 +164,44 @@ if(mode == "init")
         enableDebugging: false
     })
 
-    await build.build()
+    await fs.mkdir(`${cwd}/.webcellar/dependencies/office-js/`, {recursive: true})
+    await fs.writeFile(`${cwd}/.webcellar/dependencies/office-js/init.txt`, "init", "utf8")
 }
-else if(mode == "run")
+
+if(modes.includes("build"))
+{
+    await build()
+    
+    await fs.mkdir(`${cwd}/.webcellar/dependencies/`, {recursive: true})
+    await fs.writeFile(`${cwd}/.webcellar/dependencies/build.txt`, "build", "utf8")
+}
+
+if(modes.includes("run"))
 {
     // Nothing to init
 }
-else if(mode == "deinit")
+
+if(modes.includes("deinit"))
 {
     await officeAddinDebugging.stopDebugging(`${cwd}/.webcellar/manifest.xml`)
-    process.exit()   
 }
 
 
-// Run server
+
+// Start server
+
+if(!(modes.includes("init") || modes.includes("run")))
+{
+    process.exit() 
+}
+
 var app = express()
 var options = await officeAddinDevCerts.getHttpsServerOptions(365)
 var server = https.createServer(options, app).listen(29640)
+var webcellarCookieToDir = new Map<string, string>()
 
 app.use(cookieParser())
 app.use(express.json())
-
 
 console.log(
 `
@@ -139,7 +220,7 @@ app.use(async (req, res) =>
     console.log()
     console.log(`URL: ${decodeURIComponent(req.url)}`)
 
-    if(mode == "init")
+    if(modes.includes("init"))
     {
         // Cache cannot be zero, otherwise Excel fails to display the Webcellar icon.
         res.setHeader("Cache-Control", "public, max-age=1, must-revalidate")
@@ -186,15 +267,6 @@ app.use(async (req, res) =>
                     console.log("Please close the running Excel instance.")
 
                     res.send("OK")
-
-                    if(modeOption)
-                    {
-                        process.exit()   
-                    }
-                    else
-                    {
-                        mode = "run"
-                    }
                 }
                 else
                 {
@@ -203,10 +275,9 @@ app.use(async (req, res) =>
                     console.log("Please close the running Excel instance.")
 
                     res.send("Failed")
-
-                    process.exit()
-
                 }
+
+                modes = modes.filter(m => m != "init")
             }
         }
         else if(req.path.startsWith("/.webcellar"))
@@ -237,7 +308,7 @@ app.use(async (req, res) =>
             res.status(404).send("Not found.")
         }
     }
-    else if(mode == "run")
+    else if(modes.includes("run"))
     {
         res.setHeader("Content-Security-Policy", `default-src ${csps.join(" ")}`)
         res.setHeader('Cache-Control', "no-store, max-age=0, must-revalidate")
@@ -392,7 +463,7 @@ app.use(async (req, res) =>
             }
         }
     }
-    else if(mode == "deinit")
+    else
     {
         // Should not happen
         process.exit()   
