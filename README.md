@@ -4,7 +4,15 @@
     <img src="./.webcellar/github-header-light.svg" alt="Header" width="100%">
 </picture>
 
-**Webcellar** = **Web** technology (i.e., JavaScript) in Excel **cell**s.  
+**Webcellar** is an open source Office Add-In for Microsoft Excel that lets developers easily enhance spreadsheets with custom JavaScript and TypeScript. 
+
+- 💡 **Simple and Intuitive**: JavaScript module exports become automatically available in Excel.
+- 🎯 **Emphasis on Core Application Logic**:
+Spreadsheet UIs (UI ≈ state) emphasize core application logic over possibly auxiliary UI logic.
+- 🛡️ **Hardened Security (Configurable)**: External network requests are disabled and file access is restricted to reduce security risks. 
+- And more!
+
+In practice, Webcellar supports the development of many advanced Excel applications, such as forecasting, risk, simulation, decision and artificial intelligence (AI) models. As an end result, developers can deliver meaningful outcomes faster while preserving a familiar user interface and experience.
 
 Note: Webcellar is currently experimental and depends on undocumented [Office.js](https://github.com/officedev/office-js) APIs. Furthermore, the current capabilities of Webcellar mainly reflect the needs of its developer (Acmeon), for example, it is only tested on Windows (although it might work on Mac). Nonetheless, Webcellar may prove useful for others as well.   
 
@@ -19,7 +27,7 @@ Demo (Annotated Screenshot)
     <img src="./.webcellar/screenshot-annotated-light.svg" alt="Annotated Screenshot" width="100%">
 </picture>
 
-Exports from `*.xlsx.js` (or `*.xlsx.ts`) files become automatically available in corresponding `*.xlsx` files as functions. By default, the exports are exposed under namespace **`A`** (as in **a**pplication or **a**dd-in) in Excel.
+Exports from `*.xlsx.js` (or `*.xlsx.ts`) files become automatically available in corresponding `*.xlsx` files as functions. By default, the exports are prefixed with **`A.`** (A as in **a**pplication or **a**dd-in) in Excel.
 
 For a complete demo, run Webcellar (see the "Getting Started" section) and open `demo/demo.xlsx` in Excel. 
 
@@ -28,19 +36,19 @@ Getting Started
 
 1. Install [Node.js](https://nodejs.org/) and [Microsoft Excel](https://www.microsoft.com/en-us/microsoft-365/excel).
 
-2. Install Webcellar:
+2. Install Webcellar (installation without `--global` is also possible):
     ```
-    npm install webcellar
+    npm install --global webcellar
     ```
 
-3. Start Webcellar and define a directory (here the C drive, i.e., C:/) from which files are served (see the "Security" section for details):
+3. Start Webcellar and specify a directory, i.e., C:/, from which files are served (see the "Security" section for details):
     ```
     npx webcellar C:/
     ```
 
 4. Webcellar will initialize itself on the **first run** by installing [Office.js](https://github.com/officedev/office-js) (a network connection is required), dependencies and certificates for a local HTTPS server. Answer the questions in the console, OK the dialogs and open the Webcellar taskpane in Excel (there should be a button for Webcellar in the Excel Home tab or under the Add-Ins button, see annotated screenshot in section "Demo (Annotated Screenshot)"). 
 
-5. Exports from `*.xlsx.js` (or `*.xlsx.ts`) files are now available in  corresponding `*.xlsx` files as long as Webcellar is running. For a demo, open `demo/demo.xlsx` in Excel (assuming that it is under the C drive).
+5. Exports from `*.xlsx.js` (or `*.xlsx.ts`) files are now available in  corresponding `*.xlsx` files as long as Webcellar is running. For a demo, open `demo/demo.xlsx` in Excel (it is available under the Webcellar installation directory, which is displayed in the console).
 
 Alternatively, you can clone this repository, install the dependencies with `npm install` and start Webcellar with `node start.ts C:/`.
 
@@ -110,7 +118,7 @@ Note: Due to how Webcellar handles dimensionality conversion, to directly output
 Function Argument Types
 -----------------------
 
-Webcellar automatically extracts function argument information from JS source code and TypeScript (TS) annotations if they are available. This information is communicated to Excel primarily to limit calling functions with incorrect types. Default values for function arguments are currently not supported. 
+Webcellar automatically extracts function argument information from JS source code and TypeScript (TS) annotations if they are available. This information is used to make functions callable from Excel. The TS type annotations are primarily used to limit calling functions with incorrect types. Default values for function arguments are currently not supported. 
 
 Excel supports the following types (which directly correspond to their TS annotations): `string`, `number`, `boolean` and `any`. Other annotations (e.g., classes) are treated as `any`, which allows, for example, Excel entities.
 
@@ -134,7 +142,7 @@ Excel files often contain sensitive data. Furthermore, execution of untrusted co
 
 4. Excel disallows taskpane navigation to external websites, which reduces the risk of executing untrusted code.
 
-5. For each file that is served, the nearest (parent) Webcellar file (i.e., a `*.xlsx.js` or `*.xlsx.ts` file) must have been requested. This limits file exposure, because exact Webcellar file paths must be known upfront (note that for a given Excel file `*.xlsx` Webcellar automatically requests the corresponding `*.xlsx.js` or `*.xlsx.ts` file). Technically, authorization is stored in cookies. Examples of requests and outcomes for a given file structure are below.
+5. For each file that is served, the nearest Webcellar file (i.e., a `*.xlsx.js` or `*.xlsx.ts` file) in the current or parent directory must have been requested. This limits file exposure, because exact Webcellar file paths must be known upfront (note that for a given Excel file `*.xlsx` Webcellar automatically requests the corresponding `*.xlsx.js` or `*.xlsx.ts` file). Technically, authorization is stored in cookies. Examples of requests and outcomes for a given file structure are below.
 
     File structure (the `demo` directory of this repository):
     - bar/
@@ -184,14 +192,14 @@ Command Line Interface
 
 Command to run Webcellar server:
 ```
-npx webcellar <dirs...> [--mode <mode>] [--content-security-policy-sources <sources...>]
+npx webcellar [dirs...] [--mode <modes...>] [--content-security-policy-sources <sources...>]
 ```
 
 Arguments and options:
 
-- `dirs`: Directories (one or more) from which files are served (for example, use C:/ on Windows to grant access to all files under the C drive).
+- `dirs`: Directories from which files are served (for example, use C:/ on Windows to grant access to all files under the C drive).
 
-- `--mode <mode>`: Execution mode for Webcellar: 'init' initializes, 'build' builds dependencies, 'run' starts the server, 'deinit' removes it; by default '', which executes 'init' and 'build' (if needed) and then 'run'
+- `--mode <modes...>`: Execution mode for Webcellar: 'init' initializes, 'build' builds dependencies, 'run' starts the server, 'deinit' removes it; by default webcellar executes 'init' (if needed), 'build' (if needed) and then 'run'.
 
 - `--content-security-policy-sources <sources...>`:  Additional sources for the Content Security Policy (CSP) default-src directive (allowed by default: 'self', blob:, data:, 'unsafe-inline', 'unsafe-eval').
 
@@ -216,14 +224,14 @@ class Meta
 }
 ```
 
-Class that holds metadata for JS module exports. The `input` and `output` properties can be used to enable (`"convert"`) or disable (`"raw"`) dimensionality and data type conversion (for details, see sections "Dimensionality Conversion" and "Data Type Conversion"). The `excel` property corresponds to [Excel Custom Function Metadata](https://learn.microsoft.com/en-us/office/dev/add-ins/excel/custom-functions-json#functions). Note that using the `excel` property overrides Webcellar default behavior.  
+The `Meta` class is uded to associate metadata with JS module exports. The `input` and `output` properties can be used to enable (`"convert"`) or disable (`"raw"`) dimensionality and data type conversion (for details, see sections "Dimensionality Conversion" and "Data Type Conversion"). The `excel` property corresponds to [Excel Custom Function Metadata](https://learn.microsoft.com/en-us/office/dev/add-ins/excel/custom-functions-json#functions). Note that using the `excel` property overrides Webcellar default behavior.  
 
 ### meta
 ```ts
 function meta(value: any, meta: Meta): void
 ```
 
-Use this function to set metadata (`Meta`) for JS module exports. For example 
+The `meta` function is used to associate metadata (`Meta`) with JS module exports. For example 
 ```ts
 import * as webcellar from "/.webcellar/webcellar.js"
 
@@ -266,24 +274,27 @@ webcellar.meta(timestamp,
 ```ts
 function input(value: any, root = false): any
 ```
-Converts an Excel `value` to the corresponding JS value (for details, see sections "Dimensionality Conversion" and "Data Type Conversion"). If `root = true`, then `value` corresponds directly to a cell value, otherwise it is a property in an Excel entity. This function is automatically used if `Meta.input = "convert"`.
+The `input` function converts an Excel `value` to the corresponding JS value (for details, see sections "Dimensionality Conversion" and "Data Type Conversion"). If `root = true`, then `value` corresponds directly to a cell value, otherwise it is a property in an Excel entity. This function is automatically used if `Meta.input = "convert"`.
 
 ### output
 ```ts
 function output(value: any, root = false): any
 ```
-Converts a JS `value` to the corresponding Excel value (for details, see sections "Dimensionality Conversion" and "Data Type Conversion"). If `root = true`, then `value` corresponds directly to a root object, otherwise it is a property in an object. This function is automatically used if `Meta.output = "convert"`.
+The `output` function converts a JS `value` to the corresponding Excel value (for details, see sections "Dimensionality Conversion" and "Data Type Conversion"). If `root = true`, then `value` corresponds directly to a root object, otherwise it is a property in an object. This function is automatically used if `Meta.output = "convert"`.
 
 ### initialize
 ```ts
-async function initialize()
+async function initialize(): Promise<void>
 ```
-Initializes Webcellar and makes JavaScript module exports available in Excel. Automatically called by the Webcellar taskpane.
+The `initialize` function initializes Webcellar and makes JavaScript module exports available in Excel. Automatically called by the Webcellar taskpane.
 
 Notes
 -----
 
-Webcellar files (i.e., `*.xlsx.js` or `*.xlsx.ts`) require **no manual** build step, even if TS annotations are used. Technically, the TS annotations are erased on the client side by way of using [es-module-shims](https://github.com/guybedford/es-module-shims) and special handling of TS files. The Webcellar TS annotation eraser is custom built, because the eraser in [es-module-shims](https://github.com/guybedford/es-module-shims) is quite large (approximately 4.6 MB) and because function argument TS annotations are nonetheless processed (see section "Function Argument Types"). Thus, there may be some TS syntax that is not correctly erased.  
+Webcellar files (i.e., `*.xlsx.js` or `*.xlsx.ts`) require **no manual build step**, even if TS annotations are used. Technically, the TS annotations are erased on the client side by way of using [es-module-shims](https://github.com/guybedford/es-module-shims) and special handling of TS files. The Webcellar TS annotation eraser is custom built, because the eraser in [es-module-shims](https://github.com/guybedford/es-module-shims) is quite large (approximately 4.6 MB) and because function argument TS annotations are nonetheless processed (see section "Function Argument Types"). Thus, there may be some TS syntax that is not correctly erased.  
 
 Data is serialized when communicating between Excel and JS, which may cause issues with performance.
 
+The name **Webcellar** comes from combining **web** technology (i.e., JavaScript) with Excel **cell**s. 
+
+The port used by Webcellar (29640) is derived by mapping each letter in "Webcellar" to its alphabetical position (a = 1, b = 2, ...) and taking their product modulo 65535 (the maximum valid port number).

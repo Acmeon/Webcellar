@@ -49,7 +49,7 @@ class Meta
 
 
 var metadata = new Map<any, Meta>()
-export function meta(value: any, meta: Meta)
+export function meta(value: any, meta: Meta): void
 {
     metadata.set(value, meta)
 }
@@ -391,7 +391,7 @@ export function output(value: any, root = false): any
 }
 
 
-export async function initialize()
+export async function initialize(): Promise<void>
 {
     Office.onReady(async () => 
     {

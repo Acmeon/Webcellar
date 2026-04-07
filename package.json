@@ -1,11 +1,14 @@
 {
     "name": "webcellar",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "description": "",
     "type": "module",
     "main": "webcellar.ts",
     "homepage": "https://github.com/Acmeon/Webcellar",
-
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Acmeon/Webcellar.git"
+    },
     "scripts": {
         "dev": "node --watch index.js",
         "start": "node index.js"
