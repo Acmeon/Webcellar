@@ -61,7 +61,7 @@ Notes:
 
 - Sometimes Excel may complain about missing add-ins. Close the complaints and refresh Webcellar from the taskpane. 
 
-- For some users [Office Add-In runtime logging](https://learn.microsoft.com/en-us/office/dev/add-ins/testing/runtime-logging) might be enabled by default.  Disable Office Add-In runtime logging to improve performance (optional):
+- For some users [Office Add-In runtime logging](https://learn.microsoft.com/en-us/office/dev/add-ins/testing/runtime-logging) might be enabled by default, in which case this should appear in the console. Disable Office Add-In runtime logging to improve performance with (optional):
     ```
     npx office-addin-dev-settings runtime-log --disable
     ```
