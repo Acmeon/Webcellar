@@ -6,10 +6,10 @@
 
 **Webcellar** is an open source Office Add-In for Microsoft Excel that lets developers easily enhance spreadsheets with custom JavaScript and TypeScript. 
 
-- 💡 **Simple and Intuitive**: JavaScript module exports become automatically available in Excel.
-- 🎯 **Emphasis on Core Application Logic**:
+- **Simple and Intuitive**: JavaScript module exports become automatically available in Excel.
+- **Emphasis on Core Application Logic**:
 Spreadsheet UIs (UI ≈ state) emphasize core application logic over possibly auxiliary UI logic.
-- 🛡️ **Hardened Security (Configurable)**: External network requests are disabled and file access is restricted to reduce security risks. 
+- **Hardened Security (Configurable)**: External network requests are disabled and file access is restricted to reduce security risks. 
 - And more!
 
 In practice, Webcellar supports the development of many advanced Excel applications, such as forecasting, risk, simulation, decision and artificial intelligence (AI) models. As an end result, developers can deliver meaningful outcomes faster while preserving a familiar user interface and experience.
@@ -29,7 +29,8 @@ Demo (Annotated Screenshot)
 
 Exports from `*.xlsx.js` (or `*.xlsx.ts`) files become automatically available in corresponding `*.xlsx` files as functions. By default, the exports are prefixed with **`A.`** (A as in **a**pplication or **a**dd-in) in Excel.
 
-For a complete demo, run Webcellar (see the "Getting Started" section) and open `demo/demo.xlsx` in Excel. 
+For a complete demo, run Webcellar (see the "Getting Started" section) and open `demo/demo.xlsx` in Excel (it is available under the Webcellar installation directory, which is displayed in the console when starting Webcellar). 
+
 
 Getting Started
 ---------------
@@ -41,17 +42,23 @@ Getting Started
     npm install --global webcellar
     ```
 
-3. Start Webcellar and specify a directory, i.e., C:/, from which files are served (see the "Security" section for details):
+3. (Optional) Disable Office Add-In runtime logging to improve performance ([details here](https://learn.microsoft.com/en-us/office/dev/add-ins/testing/runtime-logging)):
+    ```
+    npx office-addin-dev-settings runtime-log --disable
+    ```
+
+4. Start Webcellar and specify a directory, i.e., C:/, from which files are served (see the "Security" section for details):
     ```
     npx webcellar C:/
     ```
 
-4. Webcellar will initialize itself on the **first run** by installing [Office.js](https://github.com/officedev/office-js) (a network connection is required), dependencies and certificates for a local HTTPS server. Answer the questions in the console, OK the dialogs and open the Webcellar taskpane in Excel (there should be a button for Webcellar in the Excel Home tab or under the Add-Ins button, see annotated screenshot in section "Demo (Annotated Screenshot)"). 
+5. Webcellar will initialize itself on the **first run** by installing [Office.js](https://github.com/officedev/office-js) (a network connection is required), dependencies and certificates for a local HTTPS server. Answer the questions in the console, OK the dialogs and open the Webcellar taskpane in Excel (there should be a button for Webcellar in the Excel Home tab or under the Add-Ins button, see annotated screenshot in section "Demo (Annotated Screenshot)"). The taskpane indicates when initialization is complete (usually within 10 seconds).
 
-5. Exports from `*.xlsx.js` (or `*.xlsx.ts`) files are now available in  corresponding `*.xlsx` files as long as Webcellar is running. For a demo, open `demo/demo.xlsx` in Excel (it is available under the Webcellar installation directory, which is displayed in the console).
+6. Exports from `*.xlsx.js` (or `*.xlsx.ts`) files are now available in  corresponding `*.xlsx` files as long as Webcellar is running. The taskpane can be closed.
 
-Alternatively, you can clone this repository, install the dependencies with `npm install` and start Webcellar with `node start.ts C:/`.
+Alternatively, you can clone this repository, install the dependencies with `npm install` and start Webcellar with, for example, `node start.ts C:/`.
 
+Note: Sometimes Excel may complain about missing add-ins. Close them and refresh Webcellar from the taskpane. 
 
 Differences Between Webcellar and an Office Add-In
 --------------------------------------------------
@@ -291,10 +298,18 @@ The `initialize` function initializes Webcellar and makes JavaScript module expo
 Notes
 -----
 
+Office Add-Ins documentation: https://learn.microsoft.com/en-us/office/dev/add-ins/
+
+Excel Add-Ins documentation: https://learn.microsoft.com/en-us/office/dev/add-ins/excel/
+
+Excel JS Add-In reference: https://learn.microsoft.com/en-us/javascript/api/excel?view=excel-js-preview
+
+
+
 Webcellar files (i.e., `*.xlsx.js` or `*.xlsx.ts`) require **no manual build step**, even if TS annotations are used. Technically, the TS annotations are erased on the client side by way of using [es-module-shims](https://github.com/guybedford/es-module-shims) and special handling of TS files. The Webcellar TS annotation eraser is custom built, because the eraser in [es-module-shims](https://github.com/guybedford/es-module-shims) is quite large (approximately 4.6 MB) and because function argument TS annotations are nonetheless processed (see section "Function Argument Types"). Thus, there may be some TS syntax that is not correctly erased.  
 
-Data is serialized when communicating between Excel and JS, which may cause issues with performance.
+Data is serialized during communication between Excel and JS, which may cause issues with performance.
 
 The name **Webcellar** comes from combining **web** technology (i.e., JavaScript) with Excel **cell**s. 
 
-The port used by Webcellar (29640) is derived by mapping each letter in "Webcellar" to its alphabetical position (a = 1, b = 2, ...) and taking their product modulo 65535 (the maximum valid port number).
+The port used by Webcellar (29640) is derived by mapping each letter in "Webcellar" to its alphabetical position (a = 1, b = 2, ...) and taking their product modulo 65535 (the maximum valid port number), which results in 29640.

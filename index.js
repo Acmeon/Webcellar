@@ -71,7 +71,7 @@ Installation directory:
 ${cwd}
 `);
 var program = new Command();
-program.name("webcellar").argument("[dirs...]", "directories from which files are served (for example, use C:/ on Windows to grant access to all files under the C drive)").option("--mode <modes...>", "execution mode for Webcellar: 'init' initializes, 'build' builds dependencies, 'run' starts the server, 'deinit' removes it; by default 'init' (if needed), 'build' (if needed) and then 'run'").option("--content-security-policy-sources <sources...>", "additional sources for the Content Security Policy (CSP) default-src directive (allowed by default: 'self', blob:, data:, 'unsafe-inline', 'unsafe-eval')").exitOverride((e) => {
+program.name("webcellar").argument("[dirs...]", "directories from which files are served (for example, use C:/ on Windows to grant access to all files under the C drive)").option("--mode <modes...>", "execution mode for Webcellar: 'init' initializes, 'build' builds dependencies, 'run' starts the server, 'deinit' removes it; by default webcellar executes 'init' (if needed), 'build' (if needed) and then 'run'").option("--content-security-policy-sources <sources...>", "additional sources for the Content Security Policy (CSP) default-src directive (allowed by default: 'self', blob:, data:, 'unsafe-inline', 'unsafe-eval')").exitOverride((e) => {
 	if (e.code != "commander.helpDisplayed") console.log("Invalid command, see the README.md file for reference (https://github.com/Acmeon/Webcellar)");
 }).parse(process.argv);
 var globs = [...program.args.map((p) => path.resolve(`${p}/**`).replaceAll("\\", "/")), path.resolve(`${cwd}/.webcellar/**`).replaceAll("\\", "/")];
@@ -96,7 +96,7 @@ if (modes.includes("run") && globs.length <= 1) {
 	console.log("Error!");
 	console.log("Current execution modes include 'run', but no directories have been specified.");
 	console.log("");
-	console.log("For example, to serve files under the C drive on Windows, run the following command:");
+	console.log("For example, to serve files under the C drive on Windows, execute the following command:");
 	console.log(`npx webcellar C:/`);
 	process.exit();
 }
