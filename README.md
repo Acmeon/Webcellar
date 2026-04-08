@@ -27,6 +27,8 @@ Demo (Annotated Screenshot)
     <img src="./.webcellar/screenshot-annotated-light.svg" alt="Annotated Screenshot" width="100%">
 </picture>
 
+View as PNG: [Light](./.webcellar/screenshot-annotated-light.png) [Dark](./.webcellar/screenshot-annotated-dark.png)  
+
 Exports from `*.xlsx.js` (or `*.xlsx.ts`) files become automatically available in corresponding `*.xlsx` files as functions. By default, the exports are prefixed with **`A.`** (A as in **a**pplication or **a**dd-in) in Excel.
 
 For a complete demo, run Webcellar (see the "Getting Started" section) and open `demo/demo.xlsx` in Excel (it is available under the Webcellar installation directory, which is displayed in the console when starting Webcellar). 
