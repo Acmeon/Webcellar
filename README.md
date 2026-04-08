@@ -27,7 +27,7 @@ Demo (Annotated Screenshot)
     <img src="./.webcellar/screenshot-annotated-light.svg" alt="Annotated Screenshot" width="100%">
 </picture>
 
-View as PNG: [Light](./.webcellar/screenshot-annotated-light.png) [Dark](./.webcellar/screenshot-annotated-dark.png)  
+View as PNG: [Light](https://raw.githubusercontent.com/Acmeon/Webcellar/main/.webcellar/screenshot-annotated-light.png) [Dark](https://raw.githubusercontent.com/Acmeon/Webcellar/main/.webcellar/screenshot-annotated-dark.png)  
 
 Exports from `*.xlsx.js` (or `*.xlsx.ts`) files become automatically available in corresponding `*.xlsx` files as functions. By default, the exports are prefixed with **`A.`** (A as in **a**pplication or **a**dd-in) in Excel.
 
