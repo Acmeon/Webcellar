@@ -42,23 +42,29 @@ Getting Started
     npm install --global webcellar
     ```
 
-3. (Optional) Disable Office Add-In runtime logging to improve performance ([details here](https://learn.microsoft.com/en-us/office/dev/add-ins/testing/runtime-logging)):
-    ```
-    npx office-addin-dev-settings runtime-log --disable
-    ```
-
-4. Start Webcellar and specify a directory, i.e., C:/, from which files are served (see the "Security" section for details):
+3. Start Webcellar and specify a directory, i.e., C:/, from which files are served (see the "Security" section for details):
     ```
     npx webcellar C:/
     ```
 
-5. Webcellar will initialize itself on the **first run** by installing [Office.js](https://github.com/officedev/office-js) (a network connection is required), dependencies and certificates for a local HTTPS server. Answer the questions in the console, OK the dialogs and open the Webcellar taskpane in Excel (there should be a button for Webcellar in the Excel Home tab or under the Add-Ins button, see annotated screenshot in section "Demo (Annotated Screenshot)"). The taskpane indicates when initialization is complete (usually within 10 seconds).
+4. Webcellar will initialize itself on the **first run** by installing [Office.js](https://github.com/officedev/office-js) (a network connection is required), dependencies and certificates for a local HTTPS server. Answer the questions in the console, OK the dialogs and open the Webcellar taskpane in Excel (there should be a button for Webcellar in the Excel Home tab or under the Add-Ins button, see annotated screenshot in section "Demo (Annotated Screenshot)"). The taskpane indicates when initialization is complete (usually within 10 seconds).
 
-6. Exports from `*.xlsx.js` (or `*.xlsx.ts`) files are now available in  corresponding `*.xlsx` files as long as Webcellar is running. The taskpane can be closed.
+5. Exports from `*.xlsx.js` (or `*.xlsx.ts`) files are now available in  corresponding `*.xlsx` files as long as Webcellar is running. The taskpane can be closed.
 
-Alternatively, you can clone this repository, install the dependencies with `npm install` and start Webcellar with, for example, `node start.ts C:/`.
 
-Note: Sometimes Excel may complain about missing add-ins. Close them and refresh Webcellar from the taskpane. 
+
+Notes: 
+
+- Webcellar is tested with Node.js 24.14.1 (LTS), however, earlier versions may also be compatible.
+
+- Webcellar can also executed by cloning this repository, installing the dependencies with `npm install` and starting Webcellar with, for example, `node start.ts C:/`.
+
+- Sometimes Excel may complain about missing add-ins. Close the complaints and refresh Webcellar from the taskpane. 
+
+- For some users [Office Add-In runtime logging](https://learn.microsoft.com/en-us/office/dev/add-ins/testing/runtime-logging) might be enabled by default.  Disable Office Add-In runtime logging to improve performance (optional):
+    ```
+    npx office-addin-dev-settings runtime-log --disable
+    ```
 
 Differences Between Webcellar and an Office Add-In
 --------------------------------------------------
