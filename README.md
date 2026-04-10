@@ -6,17 +6,6 @@
 
 **Webcellar** is an open source Office Add-In for Microsoft Excel that lets developers easily enhance spreadsheets with custom JavaScript and TypeScript. 
 
-- **Simple and Intuitive**: JavaScript module exports become automatically available in Excel.
-- **Emphasis on Core Application Logic**:
-Spreadsheet UIs (UI ≈ state) emphasize core application logic over possibly auxiliary UI logic.
-- **Hardened Security (Configurable)**: External network requests are disabled and file access is restricted to reduce security risks. 
-- And more!
-
-In practice, Webcellar supports the development of many advanced Excel applications, such as forecasting, risk, simulation, decision and artificial intelligence (AI) models. As an end result, developers can deliver meaningful outcomes faster while preserving a familiar user interface and experience.
-
-Note: Webcellar is currently experimental and depends on undocumented [Office.js](https://github.com/officedev/office-js) APIs. Furthermore, the current capabilities of Webcellar mainly reflect the needs of its developer (Acmeon), for example, it is only tested on Windows (although it might work on Mac). Nonetheless, Webcellar may prove useful for others as well.   
-
-
 
 Demo (Annotated Screenshot)
 -------------------------------------------
@@ -27,11 +16,21 @@ Demo (Annotated Screenshot)
     <img src="./.webcellar/screenshot-annotated-light.svg" alt="Annotated Screenshot" width="100%">
 </picture>
 
-View as PNG: [Light](https://raw.githubusercontent.com/Acmeon/Webcellar/main/.webcellar/screenshot-annotated-light.png) [Dark](https://raw.githubusercontent.com/Acmeon/Webcellar/main/.webcellar/screenshot-annotated-dark.png)  
-
-Exports from `*.xlsx.js` (or `*.xlsx.ts`) files become automatically available in corresponding `*.xlsx` files as functions. By default, the exports are prefixed with **`A.`** (A as in **a**pplication or **a**dd-in) in Excel.
+View as PNG: [Light](https://raw.githubusercontent.com/Acmeon/Webcellar/main/.webcellar/screenshot-annotated-light.png) [Dark](https://raw.githubusercontent.com/Acmeon/Webcellar/main/.webcellar/screenshot-annotated-dark.png) 
 
 For a complete demo, run Webcellar (see the "Getting Started" section) and open `demo/demo.xlsx` in Excel (it is available under the Webcellar installation directory, which is displayed in the console when starting Webcellar). 
+
+Key Benefits
+------------
+
+**Simple and Intuitive**: Exports from `*.xlsx.js` (or `*.xlsx.ts`) files become automatically available in corresponding `*.xlsx` files as functions. By default, the exports are prefixed with **`A.`** (A as in **a**pplication or **a**dd-in) in Excel.
+
+**Emphasis on Core Application Logic**:
+Spreadsheet UIs (UI ≈ state) emphasize core application logic over possibly auxiliary UI logic.
+
+**Hardened Security (Configurable)**: External network requests are disabled and file access is restricted to reduce security risks. 
+
+In practice, Webcellar supports the development of many advanced Excel applications, such as forecasting, risk, simulation, decision and artificial intelligence (AI) models. As an end result, developers can deliver meaningful outcomes faster while preserving a familiar user interface and experience.
 
 
 Getting Started
@@ -312,7 +311,7 @@ Excel Add-Ins documentation: https://learn.microsoft.com/en-us/office/dev/add-in
 
 Excel JS Add-In reference: https://learn.microsoft.com/en-us/javascript/api/excel?view=excel-js-preview
 
-
+Webcellar is currently experimental and depends on undocumented [Office.js](https://github.com/officedev/office-js) APIs. Furthermore, the current capabilities of Webcellar mainly reflect the needs of its developer (Acmeon), for example, it is only tested on Windows (although it might work on Mac). 
 
 Webcellar files (i.e., `*.xlsx.js` or `*.xlsx.ts`) require **no manual build step**, even if TS annotations are used. Technically, the TS annotations are erased on the client side by way of using [es-module-shims](https://github.com/guybedford/es-module-shims) and special handling of TS files. The Webcellar TS annotation eraser is custom built, because the eraser in [es-module-shims](https://github.com/guybedford/es-module-shims) is quite large (approximately 4.6 MB) and because function argument TS annotations are nonetheless processed (see section "Function Argument Types"). Thus, there may be some TS syntax that is not correctly erased.  
 
