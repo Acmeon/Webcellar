@@ -129,3 +129,18 @@ export {foo} from "./foo/foo.xlsx.js"
 
 
 export var test = [] as number[]
+
+
+export var zzz = new class
+{
+    a = "Hello"
+    b = "World!"
+}
+
+webcellar.meta(zzz, 
+{
+    excel: 
+    {
+        id: "ZZZ",
+    }
+})

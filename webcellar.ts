@@ -653,11 +653,11 @@ async function register(root: any)
                         var fn = prop.bind(value)
                         fn.toString = () => prop.toString()
 
-                        kvps.push([`${key}.${k}`, fn])
+                        kvps.push([`${id}.${k}`, fn])
                     }
                     else
                     {
-                        kvps.push([`${key}.${k}`, prop])
+                        kvps.push([`${id}.${k}`, prop])
                     }
                 }
 
@@ -677,11 +677,11 @@ async function register(root: any)
                                 var fn = prop.bind(value)
                                 fn.toString = () => prop.toString()
 
-                                kvps.push([`${key}.${k}`, fn])
+                                kvps.push([`${id}.${k}`, fn])
                             }
                             else
                             {
-                                kvps.push([`${key}.${k}`, prop])
+                                kvps.push([`${id}.${k}`, prop])
                             }
                         }   
                     }
