@@ -643,14 +643,14 @@ async function register(root: any)
 
                 // TODO: Handle infinite loops (i.e., objects that reference themselves)?
                 // Add properties for consideration to be registered.
-                for(var k of Object.getOwnPropertyNames(value))
+                for(let k of Object.getOwnPropertyNames(value))
                 {
-                    var prop = (value as any)[k]
+                    let prop = (value as any)[k]
                     
                     if(typeof(prop) == "function")
                     {
                         // Bind this and make sure that toString is matches original, bc argument types are extracted from it
-                        var fn = prop.bind(value)
+                        let fn = prop.bind(value)
                         fn.toString = () => prop.toString()
 
                         kvps.push([`${id}.${k}`, fn])
@@ -662,19 +662,19 @@ async function register(root: any)
                 }
 
                 // Add prototype properties and functions.
-                var proto = Object.getPrototypeOf(value)
+                let proto = Object.getPrototypeOf(value)
                 while (proto && proto !== Object.prototype) 
                 {
-                    for(var k of Object.getOwnPropertyNames(proto))
+                    for(let k of Object.getOwnPropertyNames(proto))
                     {
                         if(k != "constructor")
                         {
-                            var prop = (value as any)[k]
+                            let prop = (value as any)[k]
                     
                             if(typeof(prop) == "function")
                             {
                                 // Bind this and make sure that toString is matches original, bc argument types are extracted from it
-                                var fn = prop.bind(value)
+                                let fn = prop.bind(value)
                                 fn.toString = () => prop.toString()
 
                                 kvps.push([`${id}.${k}`, fn])
@@ -693,22 +693,22 @@ async function register(root: any)
         else if(typeof(value) == "function")
         {
             // Function parameter types are added as comments into the function source
-            var source = value.toString()
+            let source = value.toString()
 
-            var parametersConStart = source.indexOf(`/*${utils.con.fence}`)
-            var parametersConEnd = source.indexOf(`${utils.con.fence}*/`)
+            let parametersConStart = source.indexOf(`/*${utils.con.fence}`)
+            let parametersConEnd = source.indexOf(`${utils.con.fence}*/`)
 
             if(parametersConStart >= 0 && parametersConEnd >= 0)
             {
-                var parametersCon = source.slice(parametersConStart + `/*${utils.con.fence}`.length, parametersConEnd)
-                var parameters = utils.con.parse(parametersCon)
+                let parametersCon = source.slice(parametersConStart + `/*${utils.con.fence}`.length, parametersConEnd)
+                let parameters = utils.con.parse(parametersCon)
 
                 CustomFunctions.associate(id, async (...args: any[]) => 
                 {
                     try
                     {
                         // Skip last bc it is Excel invocation
-                        for(var i = 0; i < args.length - 1; i++)
+                        for(let i = 0; i < args.length - 1; i++)
                         {
                             args[i] = inputHandler(args[i], true)   
                         }
@@ -716,7 +716,7 @@ async function register(root: any)
                         // Handle function vs constructor
                         try
                         {
-                            var val = await value(...args)
+                            let val = await value(...args)
 
                             return outputHandler(val, true)  
                         }
@@ -727,7 +727,7 @@ async function register(root: any)
                             {
                                 try
                                 {
-                                    var val = await new (value as any)(...args)
+                                    let val = await new (value as any)(...args)
 
                                     return outputHandler(val, true) 
                                 }
