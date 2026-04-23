@@ -12,7 +12,8 @@
     "types": ["office-js", "custom-functions-runtime", "es-module-shims", "office-runtime"],
     "paths": 
     {
-      "/.webcellar/webcellar.js": ["./webcellar.ts"] 
+      "/.webcellar/webcellar.js": ["./webcellar.ts"], 
+      "/.webcellar/bootstrap.js": ["./bootstrap.ts"], 
     },
     "allowJs": true
   }
